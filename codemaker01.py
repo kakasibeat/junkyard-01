@@ -118,4 +118,4 @@ def r():
     return int(a)
 
 main()
-"なんか書いとけ"
+"なんか書いとけyo"
