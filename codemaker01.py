@@ -12,16 +12,22 @@ Created on Sat Jun 26 16:46:44 2021
 """
 
 import sympy
+import numpy
 import random
 
 
 def main():
 
-    mode=int(input("mode選択 0:鍵生成 1:暗号化 2:複合化（未実装）"))
+    mode=int(input("mode選択 0:鍵生成 1:暗号化 2:複合化"))
     if mode==0:
         make_key()
     elif mode==1:
         make_code()
+    elif mode==2:
+        remove_code()
+    else:
+        print("入力エラー！")
+        main()
 
 
 def make_key():
@@ -44,7 +50,7 @@ def make_key():
     n=p*q
     
         
-    L=(p-1)*(q-1)
+    L=numpy.lcm((p-1),(q-1))
     
         
     if p<q:
@@ -56,12 +62,17 @@ def make_key():
         e=65537
     if e==-1:
         e=sympy.randprime(MAX,L)
-            
+    
+    
+    d=sympy.gcdex(e,L)[0]
+
+    
     print("p=",p)
     print("q=",q)
     print("n=",n)
     print("L=",L)
     print("e=",e)
+    print("d=",d)
 
 def make_code():
     """こっか暗号の中身の入力、予め数字に変換してもらう"""
@@ -109,6 +120,50 @@ def make_code():
         
     print("暗号化後のデータは",code)
 
+def remove_code():
+    data=[]
+    word=0
+    code=[]
+    rist=0
+    i=0
+    C=0
+    d=int(input("dを入力してください"))
+    n=int(input("nを入力してください"))
+    
+    while word!="end":
+    
+        word=(input("数値を入力してください、「end」で入力終了"))
+            
+        """数字が入力されたときのみリストに追加"""
+        if word.isdigit()==True:
+            data.insert(0,int(word))
+            rist=rist+1 
+            print("ok")
+    N=int(input("暗号の文字数は？"))
+    while i<rist:
+        C=C+data[i]*(N**i)
+        i=i+1
+        
+    print("暗号化前の数値は",C)
+    j=C**d
+        
+    P=j%n
+        
+    print("暗号化後の数値は",P)
+        
+    i=1
+    while P//(N**i)!=0:
+        i=i+1
+        
+    print(i)
+        
+    while 0<i:
+        i=i-1
+        word=P//(N**i)
+        code.append(word)
+        P=P-word*(N**i)
+        
+    print("暗号化後のデータは",code)
 
 
 
@@ -118,4 +173,4 @@ def r():
     return int(a)
 
 main()
-"なんか書いとけyo"
+
